@@ -1,0 +1,8 @@
+node_modules/
+app/*.apk
+app/*.app
+app/*.zip
+allure-results/
+allure-report/
+.vscode/
+.DS_Store

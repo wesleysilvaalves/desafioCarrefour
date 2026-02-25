@@ -1,0 +1,41 @@
+image: node:20
+
+cache:
+  paths:
+    - node_modules/
+
+stages:
+  - test
+  - report
+
+variables:
+  # The runner will run inside a Docker container where an Android emulator needs to be started
+  # For full CI/CD running Appium tests, you'd typically use a customized runner image with Android SDK
+  # like `reactnativecommunity/react-native-android` or run in BrowserStack.
+  # Assuming BrowserStack is not strictly required but suggested:
+  BROWSERSTACK_USERNAME: $BROWSERSTACK_USER
+  BROWSERSTACK_ACCESS_KEY: $BROWSERSTACK_KEY
+
+test:android:
+  stage: test
+  tags:
+    - android
+  before_script:
+    - npm ci
+    # Ideally start an emulator here if running locally on the CI, or just start appium
+  script:
+    - npm run test
+  artifacts:
+    when: always
+    paths:
+      - allure-results
+
+generate_report:
+  stage: report
+  dependencies:
+    - test:android
+  script:
+    - npm run report
+  artifacts:
+    paths:
+      - allure-report
